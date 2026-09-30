@@ -19,7 +19,7 @@ type ScheduleItem = {
 };
 
 const navigation = [
-  { label: "الرئيسية", icon: "graduation", active: true },
+  { label: "الرئيسية", icon: "graduation" },
   { label: "استكشاف", icon: "search" },
   { label: "موادي", icon: "book" },
   { label: "الموارد", icon: "folder" },
@@ -28,21 +28,21 @@ const navigation = [
 ] as const;
 
 const modules: Module[] = [
-  { title: "Algorithmique 2", subtitle: "S3 · Licence 2", progress: 72, resources: 14, accent: "blue" },
-  { title: "Base de données", subtitle: "S3 · Licence 2", progress: 58, resources: 11, accent: "green" },
-  { title: "Systèmes d'exploitation", subtitle: "S3 · Licence 2", progress: 43, resources: 9, accent: "amber" },
+  { title: "Algorithmique 2", subtitle: "S3 · Licence 2 · Demo", progress: 72, resources: 14, accent: "blue" },
+  { title: "Base de données", subtitle: "S3 · Licence 2 · Demo", progress: 58, resources: 11, accent: "green" },
+  { title: "Systèmes d'exploitation", subtitle: "S3 · Licence 2 · Demo", progress: 43, resources: 9, accent: "amber" },
 ];
 
 const schedule: ScheduleItem[] = [
-  { time: "08:00", title: "Algorithmique 2", meta: "TD · Salle 14", active: true },
-  { time: "10:00", title: "Base de données", meta: "Cours · Amphithéâtre B" },
-  { time: "13:30", title: "Systèmes d'exploitation", meta: "TP · Salle Informatique 3" },
+  { time: "08:00", title: "Algorithmique 2", meta: "مثال تجريبي · TD · Salle 14", active: true },
+  { time: "10:00", title: "Base de données", meta: "مثال تجريبي · Cours · Amphithéâtre B" },
+  { time: "13:30", title: "Systèmes d'exploitation", meta: "مثال تجريبي · TP · Salle 3" },
 ];
 
 const updates = [
-  { label: "امتحانات", title: "ستظهر الامتحانات هنا مع تصنيف الدورة والمادة.", age: "قسم الامتحانات" },
-  { label: "جداول", title: "جدولك الشخصي سيُبنى من مستوى الطالب وفوجه.", age: "الجداول الدراسية" },
-  { label: "موارد", title: "كل مورد سيحمل مصدره وحالته قبل النشر.", age: "طبقة الثقة" },
+  { label: "الامتحانات", title: "ستظهر الامتحانات هنا بعد إدخال المصادر المعتمدة.", age: "V1" },
+  { label: "الجداول", title: "سيُبنى الجدول الشخصي من السياق الأكاديمي وفوج الطالب.", age: "V1" },
+  { label: "الموارد", title: "كل مورد سيمر عبر المصدر والحالة والمراجعة قبل النشر.", age: "Trust" },
 ];
 
 const quickActions = [
@@ -67,9 +67,7 @@ function SectionHeading({
         <h2 className="mt-1.5 text-xl font-bold tracking-tight text-[var(--primary)]">{title}</h2>
       </div>
       {action ? (
-        <button className="text-xs font-semibold text-[var(--accent)] transition hover:opacity-70">
-          {action}
-        </button>
+        <button className="text-xs font-semibold text-[var(--accent)] transition hover:opacity-70">{action}</button>
       ) : null}
     </div>
   );
@@ -78,9 +76,11 @@ function SectionHeading({
 export default function HomePage() {
   const [query, setQuery] = useState("");
   const [activeNav, setActiveNav] = useState("الرئيسية");
+
   const filteredModules = useMemo(() => {
     const normalized = query.trim().toLowerCase();
     if (!normalized) return modules;
+
     return modules.filter((item) =>
       `${item.title} ${item.subtitle}`.toLowerCase().includes(normalized),
     );
@@ -110,15 +110,20 @@ export default function HomePage() {
                   placeholder="ابحث عن مادة، امتحان، درس أو مشروع..."
                   className="w-full bg-transparent text-sm outline-none placeholder:text-slate-400"
                 />
-                <kbd className="hidden rounded-md border border-[var(--border)] bg-white px-2 py-1 text-[9px] text-[var(--text-muted)] lg:block">/</kbd>
               </label>
             </div>
 
             <div className="mr-auto flex items-center gap-2">
-              <button aria-label="الإشعارات" className="hidden size-10 items-center justify-center rounded-xl border border-[var(--border)] text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:text-[var(--accent)] sm:flex">
+              <button
+                aria-label="الإشعارات"
+                className="hidden size-10 items-center justify-center rounded-xl border border-[var(--border)] text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:text-[var(--accent)] sm:flex"
+              >
                 <Icon name="bell" size={18} />
               </button>
-              <button className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-right transition hover:border-[var(--accent)]">
+              <button
+                aria-label="حساب الطالب"
+                className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-right transition hover:border-[var(--accent)]"
+              >
                 <span className="flex size-7 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[10px] font-black text-[var(--accent)]">A</span>
                 <span className="hidden text-xs font-semibold text-[var(--primary)] lg:block">طالب</span>
               </button>
@@ -128,7 +133,13 @@ export default function HomePage() {
           <div className="mt-3 flex items-center gap-2 overflow-x-auto no-scrollbar md:hidden">
             <label className="flex min-w-[230px] flex-1 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3">
               <Icon name="search" size={16} className="text-[var(--text-muted)]" />
-              <input aria-label="البحث في المنصة" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="ابحث في المنصة..." className="w-full bg-transparent py-2.5 text-xs outline-none" />
+              <input
+                aria-label="البحث في المنصة"
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="ابحث في المنصة..."
+                className="w-full bg-transparent py-2.5 text-xs outline-none"
+              />
             </label>
           </div>
         </header>
@@ -141,27 +152,42 @@ export default function HomePage() {
                   <span className="rounded-full bg-white/10 px-2.5 py-1 text-[9px] font-semibold text-slate-300">DEMO CONTEXT</span>
                   <Icon name="spark" size={16} className="text-slate-300" />
                 </div>
-                <p className="mt-5 text-xs text-slate-300">السياق الأكاديمي</p>
+                <p className="mt-5 text-xs text-slate-300">السياق الأكاديمي — مثال</p>
                 <p className="mt-1 text-base font-bold">L2 · Informatique</p>
                 <p className="mt-1 text-[11px] text-slate-400">S3 · Groupe A3</p>
               </div>
-              <nav className="mt-3 space-y-1">
+
+              <nav className="mt-3 space-y-1" aria-label="التنقل الرئيسي">
                 {navigation.map((item) => (
-                  <button key={item.label} onClick={() => setActiveNav(item.label)} className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold transition ${activeNav === item.label ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "text-[var(--text-muted)] hover:bg-[var(--bg)] hover:text-[var(--primary)]"}`}>
+                  <button
+                    key={item.label}
+                    onClick={() => setActiveNav(item.label)}
+                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold transition ${
+                      activeNav === item.label
+                        ? "bg-[var(--accent-soft)] text-[var(--accent)]"
+                        : "text-[var(--text-muted)] hover:bg-[var(--bg)] hover:text-[var(--primary)]"
+                    }`}
+                  >
                     <Icon name={item.icon} size={17} />
                     <span>{item.label}</span>
                     {activeNav === item.label ? <span className="mr-auto size-1.5 rounded-full bg-[var(--accent)]" /> : null}
                   </button>
                 ))}
               </nav>
+
               <div className="my-3 border-t border-[var(--border)]" />
-              <button className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold text-[var(--text-muted)] transition hover:bg-[var(--bg)] hover:text-[var(--primary)]">
+
+              <button
+                onClick={() => setActiveNav("الجدول الأسبوعي")}
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold text-[var(--text-muted)] transition hover:bg-[var(--bg)] hover:text-[var(--primary)]"
+              >
                 <Icon name="calendar" size={17} />
                 الجدول الأسبوعي
               </button>
+
               <div className="mt-4 rounded-xl bg-[var(--bg)] px-3 py-3">
-                <p className="text-[10px] font-semibold text-[var(--text-muted)]">المصدر</p>
-                <p className="mt-1 text-[11px] leading-5 text-[var(--text)]">معلومات العرض الحالية تجريبية إلى أن نربط قاعدة البيانات الرسمية.</p>
+                <p className="text-[10px] font-semibold text-[var(--text-muted)]">حالة البيانات</p>
+                <p className="mt-1 text-[11px] leading-5 text-[var(--text)]">هذه الشاشة تستخدم بيانات تجريبية فقط. لن نعرض بيانات أكاديمية غير موثقة على أنها حقيقية.</p>
               </div>
             </div>
           </aside>
@@ -172,10 +198,15 @@ export default function HomePage() {
                 <div className="max-w-3xl">
                   <p className="text-xs font-bold tracking-[0.18em] text-[var(--accent)]">YOUR ACADEMIC WORKSPACE</p>
                   <h1 className="mt-2 text-2xl font-bold leading-tight tracking-tight text-[var(--primary)] sm:text-4xl">كل ما تحتاجه للدراسة، مرتب حولك.</h1>
-                  <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">منصة مستقلة تجمع المواد والموارد والامتحانات والجدول في تجربة واحدة. النسخة الحالية واجهة عرض تجريبية؛ البيانات الحقيقية ستأتي من الطبقة الأكاديمية المعتمدة.</p>
+                  <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-muted)]">منصة مستقلة تجمع المواد والموارد والامتحانات والجدول في تجربة واحدة. هذه نسخة واجهة أولية؛ البيانات الحقيقية ستأتي من مصادر موثوقة ومراجعة.</p>
                 </div>
+
                 <div className="grid grid-cols-3 gap-2 xl:min-w-[360px]">
-                  {[[ "3", "مواد" ], [ "34", "موارد" ], [ "72%", "أعلى تقدم" ]].map(([value, label]) => (
+                  {[
+                    ["V1", "مرحلة الإطلاق"],
+                    ["FTS", "بحث نصي"],
+                    ["RLS", "حماية البيانات"],
+                  ].map(([value, label]) => (
                     <div key={label} className="rounded-2xl border border-[var(--border)] bg-[var(--bg)] px-3 py-3 text-center">
                       <p className="text-lg font-black tracking-tight text-[var(--primary)]">{value}</p>
                       <p className="mt-1 text-[10px] text-[var(--text-muted)]">{label}</p>
@@ -187,16 +218,21 @@ export default function HomePage() {
 
             <div className="grid gap-5 py-5 xl:grid-cols-[1.15fr_.85fr]">
               <section>
-                <SectionHeading eyebrow="TODAY" title="جدول اليوم" action="الأسبوع كاملًا" />
+                <SectionHeading eyebrow="TODAY · DEMO" title="جدول اليوم" action="الأسبوع كاملًا" />
                 <div className="overflow-hidden rounded-[24px] border border-[var(--border)] bg-white">
                   {schedule.map((item, index) => (
-                    <article key={item.time} className={`grid grid-cols-[68px_1fr_auto] items-center gap-3 px-4 py-4 sm:grid-cols-[72px_1fr_auto] sm:px-5 ${index !== schedule.length - 1 ? "border-b border-[var(--border)]" : ""}`}>
+                    <article
+                      key={item.time}
+                      className={`grid grid-cols-[68px_1fr_auto] items-center gap-3 px-4 py-4 sm:grid-cols-[72px_1fr_auto] sm:px-5 ${index !== schedule.length - 1 ? "border-b border-[var(--border)]" : ""}`}
+                    >
                       <div className={`text-xs font-semibold ${item.active ? "text-[var(--accent)]" : "text-[var(--text-muted)]"}`}>{item.time}</div>
                       <div className="min-w-0 border-r border-[var(--border)] pr-4">
                         <p className="truncate text-sm font-bold text-[var(--primary)]">{item.title}</p>
                         <p className="mt-1 truncate text-[11px] text-[var(--text-muted)]">{item.meta}</p>
                       </div>
-                      <div className={`rounded-full px-2.5 py-1 text-[9px] font-bold ${item.active ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--bg)] text-[var(--text-muted)]"}`}>{item.active ? "الآن" : "لاحقًا"}</div>
+                      <div className={`rounded-full px-2.5 py-1 text-[9px] font-bold ${item.active ? "bg-[var(--accent-soft)] text-[var(--accent)]" : "bg-[var(--bg)] text-[var(--text-muted)]"}`}>
+                        {item.active ? "مثال" : "Demo"}
+                      </div>
                     </article>
                   ))}
                 </div>
@@ -206,8 +242,14 @@ export default function HomePage() {
                 <SectionHeading eyebrow="QUICK ACCESS" title="اختصاراتك" />
                 <div className="grid gap-2.5">
                   {quickActions.map((item) => (
-                    <button key={item.label} className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-white p-4 text-right transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[0_12px_26px_rgba(16,38,56,.06)]">
-                      <span className="flex size-10 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]"><Icon name={item.icon} size={18} /></span>
+                    <button
+                      key={item.label}
+                      onClick={() => setActiveNav(item.label)}
+                      className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-white p-4 text-right transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[0_12px_26px_rgba(16,38,56,.06)]"
+                    >
+                      <span className="flex size-10 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
+                        <Icon name={item.icon} size={18} />
+                      </span>
                       <span className="flex-1 text-sm font-semibold text-[var(--primary)]">{item.label}</span>
                       <Icon name="chevron" size={16} className="text-[var(--text-muted)]" />
                     </button>
@@ -217,7 +259,7 @@ export default function HomePage() {
             </div>
 
             <section>
-              <SectionHeading eyebrow="MY MODULES" title="المواد الحالية" action="استكشاف المواد" />
+              <SectionHeading eyebrow="MY MODULES · DEMO" title="المواد الحالية" action="استكشاف المواد" />
               <div className="grid gap-3 md:grid-cols-3">
                 {filteredModules.map((item) => (
                   <article key={item.title} className="rounded-[22px] border border-[var(--border)] bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(16,38,56,.06)]">
@@ -225,22 +267,32 @@ export default function HomePage() {
                       <div className={`flex size-10 items-center justify-center rounded-xl ${item.accent === "blue" ? "bg-[var(--accent-soft)] text-[var(--accent)]" : item.accent === "green" ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--warning-soft)] text-[var(--warning)]"}`}>
                         <Icon name="book" size={18} />
                       </div>
-                      <button aria-label={`حفظ ${item.title}`} className="rounded-lg p-1.5 text-[var(--text-muted)] transition hover:bg-[var(--bg)] hover:text-[var(--accent)]"><Icon name="bookmark" size={16} /></button>
+                      <button aria-label={`حفظ ${item.title}`} className="rounded-lg p-1.5 text-[var(--text-muted)] transition hover:bg-[var(--bg)] hover:text-[var(--accent)]">
+                        <Icon name="bookmark" size={16} />
+                      </button>
                     </div>
                     <p className="mt-4 text-sm font-bold text-[var(--primary)]">{item.title}</p>
-                    <p className="mt-1 text-[11px] text-[var(--text-muted)]">{item.subtitle} · {item.resources} موارد</p>
+                    <p className="mt-1 text-[11px] text-[var(--text-muted)]">{item.subtitle} · {item.resources} موارد تجريبية</p>
                     <div className="mt-4">
-                      <div className="flex items-center justify-between text-[10px]"><span className="text-[var(--text-muted)]">التقدم</span><span className="font-bold text-[var(--primary)]">{item.progress}%</span></div>
-                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--bg)]"><div className="h-full rounded-full bg-[var(--accent)] transition-all" style={{ width: `${item.progress}%` }} /></div>
+                      <div className="flex items-center justify-between text-[10px]">
+                        <span className="text-[var(--text-muted)]">تقدم تجريبي</span>
+                        <span className="font-bold text-[var(--primary)]">{item.progress}%</span>
+                      </div>
+                      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-[var(--bg)]">
+                        <div className="h-full rounded-full bg-[var(--accent)] transition-all" style={{ width: `${item.progress}%` }} />
+                      </div>
                     </div>
                   </article>
                 ))}
+                {!filteredModules.length ? (
+                  <div className="md:col-span-3 rounded-2xl border border-dashed border-[var(--border)] bg-white p-8 text-center text-sm text-[var(--text-muted)]">لا توجد مادة مطابقة لبحثك.</div>
+                ) : null}
               </div>
             </section>
 
             <div className="grid gap-5 py-6 xl:grid-cols-[1.15fr_.85fr]">
               <section>
-                <SectionHeading eyebrow="LATEST" title="آخر المستجدات" action="عرض الكل" />
+                <SectionHeading eyebrow="LATEST · DEMO" title="آخر المستجدات" action="عرض الكل" />
                 <div className="rounded-[24px] border border-[var(--border)] bg-white">
                   {updates.map((item, index) => (
                     <article key={item.title} className={`flex items-start gap-3 px-4 py-4 sm:px-5 ${index !== updates.length - 1 ? "border-b border-[var(--border)]" : ""}`}>
@@ -263,24 +315,34 @@ export default function HomePage() {
                     <p className="text-[10px] font-bold tracking-[0.18em] text-slate-300">TRUST LAYER</p>
                     <h2 className="mt-2 text-xl font-bold">المعلومة لها مصدر.</h2>
                   </div>
-                  <span className="flex size-10 items-center justify-center rounded-xl bg-white/10 text-slate-200"><Icon name="check" size={18} /></span>
+                  <span className="flex size-10 items-center justify-center rounded-xl bg-white/10 text-slate-200">
+                    <Icon name="check" size={18} />
+                  </span>
                 </div>
                 <p className="mt-3 text-sm leading-7 text-slate-300">كل مورد في المنصة سيُصنّف بوضوح: رسمي، موثق، مساهمة مجتمعية أو مؤرشف. هذا ما سيجعل البحث والـAI قابلين للثقة لاحقًا.</p>
                 <div className="mt-5 grid grid-cols-2 gap-2">
-                  {["Official", "Verified", "Community", "Archived"].map((status) => <span key={status} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center text-[10px] font-semibold text-slate-200">{status}</span>)}
+                  {["Official", "Verified", "Community", "Archived"].map((status) => (
+                    <span key={status} className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-center text-[10px] font-semibold text-slate-200">{status}</span>
+                  ))}
                 </div>
               </section>
             </div>
 
-            <footer className="border-t border-[var(--border)] py-6 text-center text-[10px] leading-5 text-[var(--text-muted)]">M&apos;Sila CS Hub مشروع أكاديمي مستقل. هذه الشاشة تستخدم بيانات تجريبية إلى حين ربط مصادر موثوقة.</footer>
+            <footer className="border-t border-[var(--border)] py-6 text-center text-[10px] leading-5 text-[var(--text-muted)]">M&apos;Sila CS Hub مشروع أكاديمي مستقل. البيانات المعروضة هنا تجريبية إلى حين ربط مصادر موثوقة.</footer>
           </section>
         </div>
       </div>
 
-      <nav className="fixed inset-x-3 bottom-3 z-40 rounded-2xl border border-[var(--border)] bg-white/95 p-1.5 shadow-[0_18px_48px_rgba(16,38,56,.15)] backdrop-blur lg:hidden">
+      <nav className="fixed inset-x-3 bottom-3 z-40 rounded-2xl border border-[var(--border)] bg-white/95 p-1.5 shadow-[0_18px_48px_rgba(16,38,56,.15)] backdrop-blur lg:hidden" aria-label="التنقل السريع">
         <div className="grid grid-cols-4 gap-1">
           {["الرئيسية", "استكشاف", "الجدول", "حسابي"].map((item) => (
-            <button key={item} onClick={() => setActiveNav(item)} className={`rounded-xl px-2 py-2.5 text-[10px] font-bold transition ${activeNav === item ? "bg-[var(--primary)] text-white" : "text-[var(--text-muted)]"}`}>{item}</button>
+            <button
+              key={item}
+              onClick={() => setActiveNav(item)}
+              className={`rounded-xl px-2 py-2.5 text-[10px] font-bold transition ${activeNav === item ? "bg-[var(--primary)] text-white" : "text-[var(--text-muted)]"}`}
+            >
+              {item}
+            </button>
           ))}
         </div>
       </nav>
