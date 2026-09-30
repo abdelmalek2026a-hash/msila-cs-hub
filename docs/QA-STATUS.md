@@ -19,8 +19,8 @@
 
 ## Known gaps
 
-### P0 — Repository visibility
-The GitHub repository is currently public. This must be reviewed and intentionally set to private before any real academic data, credentials, or internal documents are introduced.
+### Resolved — Repository visibility
+The GitHub repository has been confirmed as private. No real academic data or production credentials have been introduced.
 
 ### P1 — Dependency lockfile
 There is currently no committed `package-lock.json`. CI therefore uses `npm install`, not `npm ci`. A lockfile must be generated and committed before treating builds as fully deterministic.
@@ -36,7 +36,7 @@ The current health endpoint is liveness-only. Production readiness should add a 
 
 ## Gate
 
-The UI foundation build gate is now green on the latest verified commit. Do not merge the feature until the repository visibility issue and dependency reproducibility are addressed or explicitly accepted.
+The UI foundation build gate is green on the latest verified build. Do not merge the feature until the dependency reproducibility gap is addressed or explicitly accepted.
 
 ## Next technical gate
 
