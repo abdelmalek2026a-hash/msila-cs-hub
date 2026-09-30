@@ -45,10 +45,17 @@ const updates = [
   { label: "الموارد", title: "كل مورد سيمر عبر المصدر والحالة والمراجعة قبل النشر.", age: "Trust" },
 ];
 
-const quickActions = [
+type QuickAction = {
+  label: string;
+  icon: "calendar" | "search";
+  href?: string;
+  action?: "focus-search";
+};
+
+const quickActions: readonly QuickAction[] = [
   { label: "افتح جدول الأسبوع", icon: "calendar", href: "#today-schedule" },
   { label: "ابحث في المواد", icon: "search", action: "focus-search" },
-] as const;
+];
 
 function SectionHeading({
   eyebrow,
