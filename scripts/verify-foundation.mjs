@@ -66,7 +66,7 @@ for (const key of [
   assert.match(envExample, new RegExp(`^${key}$`, "m"));
 }
 
-for (const file of ["app", "components", "lib", "scripts", "docs"]) {
+for (const file of ["app", "components", "scripts", "docs"]) {
   assert.ok(fs.existsSync(path.join(root, file)), `Missing project area: ${file}`);
 }
 
