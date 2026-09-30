@@ -16,6 +16,7 @@
 - `/api/health` is a liveness endpoint and does not claim database readiness.
 - No known secrets were found in the current feature branch source during the review.
 - The dashboard no longer presents unimplemented navigation/actions as working product features.
+- A lightweight automated foundation contract check now runs in CI via `npm run foundation:verify`, covering required files, critical configuration, environment contract, and key UX safety invariants.
 
 ## Known gaps
 
@@ -26,7 +27,7 @@ The GitHub repository has been confirmed as private. No real academic data or pr
 There is currently no committed `package-lock.json`. CI therefore uses `npm install`, not `npm ci`. A lockfile must be generated and committed before treating builds as fully deterministic.
 
 ### P1 — Automated tests
-The foundation currently has typecheck/build coverage but no unit or integration test suite. Tests must be introduced before data mutations, authentication, moderation, or RLS-heavy features are considered production-ready.
+The foundation now has an automated contract verification check plus typecheck/build coverage, but it does not yet have a full unit/integration suite. Domain-level tests must be introduced before data mutations, authentication, moderation, or RLS-heavy features are considered production-ready.
 
 ### P1 — Route implementation
 The home dashboard is the only product route currently implemented. Sidebar items marked “قريبًا” are intentionally placeholders until their real routes exist.
