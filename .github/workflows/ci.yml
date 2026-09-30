@@ -25,5 +25,6 @@ jobs:
           package-manager-cache: false
 
       - run: npm install --no-audit --no-fund
+      - run: npm run foundation:verify
       - run: npm run typecheck
       - run: npm run build
