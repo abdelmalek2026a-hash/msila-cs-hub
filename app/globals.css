@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #f6f5f1;
+  --surface: #ffffff;
+  --surface-muted: #eef1f2;
+  --text: #14181d;
+  --text-muted: #6b727b;
+  --primary: #102638;
+  --accent: #17627c;
+  --accent-soft: #e4eff3;
+  --success: #237d56;
+  --warning: #9a6b13;
+  --border: #dfe2e0;
+  --shadow: 0 18px 50px rgba(16, 38, 56, 0.08);
+}
+
+html {
+  background: var(--bg);
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(23, 98, 124, 0.06), transparent 28rem),
+    var(--bg);
+  color: var(--text);
+  font-family: Cairo, Tajawal, Arial, sans-serif;
+  text-rendering: optimizeLegibility;
+}
+
+button,
+input,
+select {
+  font: inherit;
+}
+
+::selection {
+  background: rgba(23, 98, 124, 0.16);
+}
+
+.ltr {
+  direction: ltr;
+}
+
+.glass-line {
+  border: 1px solid rgba(223, 226, 224, 0.9);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(14px);
+}
+
+.soft-shadow {
+  box-shadow: var(--shadow);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
