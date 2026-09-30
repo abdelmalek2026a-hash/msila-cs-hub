@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Icon } from "@/components/icon";
 
 type Module = {
@@ -46,19 +46,20 @@ const updates = [
 ];
 
 const quickActions = [
-  { label: "أضف إلى المحفوظات", icon: "bookmark" },
-  { label: "افتح جدول الأسبوع", icon: "calendar" },
-  { label: "ابحث في المواد", icon: "search" },
+  { label: "افتح جدول الأسبوع", icon: "calendar", href: "#today-schedule" },
+  { label: "ابحث في المواد", icon: "search", action: "focus-search" },
 ] as const;
 
 function SectionHeading({
   eyebrow,
   title,
   action,
+  actionHref,
 }: {
   eyebrow: string;
   title: string;
   action?: string;
+  actionHref?: string;
 }) {
   return (
     <div className="mb-4 flex items-end justify-between gap-4">
@@ -66,8 +67,12 @@ function SectionHeading({
         <p className="text-[10px] font-bold tracking-[0.22em] text-[var(--accent)]">{eyebrow}</p>
         <h2 className="mt-1.5 text-xl font-bold tracking-tight text-[var(--primary)]">{title}</h2>
       </div>
-      {action ? (
-        <button className="text-xs font-semibold text-[var(--accent)] transition hover:opacity-70">{action}</button>
+      {action && actionHref ? (
+        <a href={actionHref} className="text-xs font-semibold text-[var(--accent)] transition hover:opacity-70 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[var(--accent)]">
+          {action}
+        </a>
+      ) : action ? (
+        <span className="text-xs font-semibold text-[var(--text-muted)]">{action}</span>
       ) : null}
     </div>
   );
@@ -75,7 +80,9 @@ function SectionHeading({
 
 export default function HomePage() {
   const [query, setQuery] = useState("");
-  const [activeNav, setActiveNav] = useState("الرئيسية");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const focusSearch = () => searchInputRef.current?.focus();
 
   const filteredModules = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -104,6 +111,7 @@ export default function HomePage() {
               <label className="flex h-11 items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 transition focus-within:border-[var(--accent)] focus-within:bg-white">
                 <Icon name="search" size={18} className="text-[var(--text-muted)]" />
                 <input
+                  ref={searchInputRef}
                   aria-label="البحث في المنصة"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -114,19 +122,20 @@ export default function HomePage() {
             </div>
 
             <div className="mr-auto flex items-center gap-2">
-              <button
-                aria-label="الإشعارات"
-                className="hidden size-10 items-center justify-center rounded-xl border border-[var(--border)] text-[var(--text-muted)] transition hover:border-[var(--accent)] hover:text-[var(--accent)] sm:flex"
+              <div
+                title="الإشعارات — ستتوفر بعد ربط الحساب"
+                aria-hidden="true"
+                className="hidden size-10 items-center justify-center rounded-xl border border-[var(--border)] text-[var(--text-muted)] sm:flex"
               >
                 <Icon name="bell" size={18} />
-              </button>
-              <button
-                aria-label="حساب الطالب"
-                className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-right transition hover:border-[var(--accent)]"
+              </div>
+              <div
+                title="حساب الطالب — ستتوفر بعد ربط تسجيل الدخول"
+                className="flex items-center gap-2 rounded-xl border border-[var(--border)] bg-white px-3 py-2 text-right"
               >
                 <span className="flex size-7 items-center justify-center rounded-full bg-[var(--accent-soft)] text-[10px] font-black text-[var(--accent)]">A</span>
-                <span className="hidden text-xs font-semibold text-[var(--primary)] lg:block">طالب</span>
-              </button>
+                <span className="hidden text-xs font-semibold text-[var(--primary)] lg:block">حساب تجريبي</span>
+              </div>
             </div>
           </div>
 
@@ -159,31 +168,34 @@ export default function HomePage() {
 
               <nav className="mt-3 space-y-1" aria-label="التنقل الرئيسي">
                 {navigation.map((item) => (
-                  <button
+                  <div
                     key={item.label}
-                    onClick={() => setActiveNav(item.label)}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold transition ${
-                      activeNav === item.label
+                    className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold ${
+                      item.label === "الرئيسية"
                         ? "bg-[var(--accent-soft)] text-[var(--accent)]"
-                        : "text-[var(--text-muted)] hover:bg-[var(--bg)] hover:text-[var(--primary)]"
+                        : "text-[var(--text-muted)]"
                     }`}
                   >
                     <Icon name={item.icon} size={17} />
                     <span>{item.label}</span>
-                    {activeNav === item.label ? <span className="mr-auto size-1.5 rounded-full bg-[var(--accent)]" /> : null}
-                  </button>
+                    {item.label === "الرئيسية" ? (
+                      <span className="mr-auto size-1.5 rounded-full bg-[var(--accent)]" />
+                    ) : (
+                      <span className="mr-auto rounded-full bg-[var(--bg)] px-2 py-0.5 text-[8px] font-bold text-[var(--text-muted)]">قريبًا</span>
+                    )}
+                  </div>
                 ))}
               </nav>
 
               <div className="my-3 border-t border-[var(--border)]" />
 
-              <button
-                onClick={() => setActiveNav("الجدول الأسبوعي")}
-                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold text-[var(--text-muted)] transition hover:bg-[var(--bg)] hover:text-[var(--primary)]"
+              <a
+                href="#today-schedule"
+                className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-right text-sm font-semibold text-[var(--text-muted)] transition hover:bg-[var(--bg)] hover:text-[var(--primary)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
               >
                 <Icon name="calendar" size={17} />
                 الجدول الأسبوعي
-              </button>
+              </a>
 
               <div className="mt-4 rounded-xl bg-[var(--bg)] px-3 py-3">
                 <p className="text-[10px] font-semibold text-[var(--text-muted)]">حالة البيانات</p>
@@ -218,8 +230,8 @@ export default function HomePage() {
 
             <div className="grid gap-5 py-5 xl:grid-cols-[1.15fr_.85fr]">
               <section>
-                <SectionHeading eyebrow="TODAY · DEMO" title="جدول اليوم" action="الأسبوع كاملًا" />
-                <div className="overflow-hidden rounded-[24px] border border-[var(--border)] bg-white">
+                <SectionHeading eyebrow="TODAY · DEMO" title="جدول اليوم" action="الأسبوع كاملًا" actionHref="#today-schedule" />
+                <div id="today-schedule" className="overflow-hidden rounded-[24px] border border-[var(--border)] bg-white">
                   {schedule.map((item, index) => (
                     <article
                       key={item.time}
@@ -241,35 +253,50 @@ export default function HomePage() {
               <section>
                 <SectionHeading eyebrow="QUICK ACCESS" title="اختصاراتك" />
                 <div className="grid gap-2.5">
-                  {quickActions.map((item) => (
-                    <button
-                      key={item.label}
-                      onClick={() => setActiveNav(item.label)}
-                      className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-white p-4 text-right transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[0_12px_26px_rgba(16,38,56,.06)]"
-                    >
-                      <span className="flex size-10 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
-                        <Icon name={item.icon} size={18} />
-                      </span>
-                      <span className="flex-1 text-sm font-semibold text-[var(--primary)]">{item.label}</span>
-                      <Icon name="chevron" size={16} className="text-[var(--text-muted)]" />
-                    </button>
-                  ))}
+                  {quickActions.map((item) =>
+                    item.href ? (
+                      <a
+                        key={item.label}
+                        href={item.href}
+                        className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-white p-4 text-right transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[0_12px_26px_rgba(16,38,56,.06)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                      >
+                        <span className="flex size-10 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
+                          <Icon name={item.icon} size={18} />
+                        </span>
+                        <span className="flex-1 text-sm font-semibold text-[var(--primary)]">{item.label}</span>
+                        <Icon name="chevron" size={16} className="text-[var(--text-muted)]" />
+                      </a>
+                    ) : (
+                      <button
+                        key={item.label}
+                        type="button"
+                        onClick={focusSearch}
+                        className="flex items-center gap-3 rounded-2xl border border-[var(--border)] bg-white p-4 text-right transition hover:-translate-y-0.5 hover:border-[var(--accent)] hover:shadow-[0_12px_26px_rgba(16,38,56,.06)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--accent)]"
+                      >
+                        <span className="flex size-10 items-center justify-center rounded-xl bg-[var(--accent-soft)] text-[var(--accent)]">
+                          <Icon name={item.icon} size={18} />
+                        </span>
+                        <span className="flex-1 text-sm font-semibold text-[var(--primary)]">{item.label}</span>
+                        <Icon name="chevron" size={16} className="text-[var(--text-muted)]" />
+                      </button>
+                    ),
+                  )}
                 </div>
               </section>
             </div>
 
             <section>
-              <SectionHeading eyebrow="MY MODULES · DEMO" title="المواد الحالية" action="استكشاف المواد" />
-              <div className="grid gap-3 md:grid-cols-3">
+              <SectionHeading eyebrow="MY MODULES · DEMO" title="المواد الحالية" action="استكشاف المواد" actionHref="#modules" />
+              <div id="modules" className="grid gap-3 md:grid-cols-3">
                 {filteredModules.map((item) => (
                   <article key={item.title} className="rounded-[22px] border border-[var(--border)] bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-[0_14px_34px_rgba(16,38,56,.06)]">
                     <div className="flex items-start justify-between gap-3">
                       <div className={`flex size-10 items-center justify-center rounded-xl ${item.accent === "blue" ? "bg-[var(--accent-soft)] text-[var(--accent)]" : item.accent === "green" ? "bg-[var(--success-soft)] text-[var(--success)]" : "bg-[var(--warning-soft)] text-[var(--warning)]"}`}>
                         <Icon name="book" size={18} />
                       </div>
-                      <button aria-label={`حفظ ${item.title}`} className="rounded-lg p-1.5 text-[var(--text-muted)] transition hover:bg-[var(--bg)] hover:text-[var(--accent)]">
+                      <span title="الحفظ سيُفعّل بعد ربط الحساب" aria-hidden="true" className="rounded-lg p-1.5 text-[var(--text-muted)]">
                         <Icon name="bookmark" size={16} />
-                      </button>
+                      </span>
                     </div>
                     <p className="mt-4 text-sm font-bold text-[var(--primary)]">{item.title}</p>
                     <p className="mt-1 text-[11px] text-[var(--text-muted)]">{item.subtitle} · {item.resources} موارد تجريبية</p>
@@ -292,8 +319,8 @@ export default function HomePage() {
 
             <div className="grid gap-5 py-6 xl:grid-cols-[1.15fr_.85fr]">
               <section>
-                <SectionHeading eyebrow="LATEST · DEMO" title="آخر المستجدات" action="عرض الكل" />
-                <div className="rounded-[24px] border border-[var(--border)] bg-white">
+                <SectionHeading eyebrow="LATEST · DEMO" title="آخر المستجدات" action="عرض الكل" actionHref="#latest" />
+                <div id="latest" className="rounded-[24px] border border-[var(--border)] bg-white">
                   {updates.map((item, index) => (
                     <article key={item.title} className={`flex items-start gap-3 px-4 py-4 sm:px-5 ${index !== updates.length - 1 ? "border-b border-[var(--border)]" : ""}`}>
                       <span className="mt-1 flex size-2.5 shrink-0 rounded-full bg-[var(--accent)]" />
@@ -334,16 +361,10 @@ export default function HomePage() {
       </div>
 
       <nav className="fixed inset-x-3 bottom-3 z-40 rounded-2xl border border-[var(--border)] bg-white/95 p-1.5 shadow-[0_18px_48px_rgba(16,38,56,.15)] backdrop-blur lg:hidden" aria-label="التنقل السريع">
-        <div className="grid grid-cols-4 gap-1">
-          {["الرئيسية", "استكشاف", "الجدول", "حسابي"].map((item) => (
-            <button
-              key={item}
-              onClick={() => setActiveNav(item)}
-              className={`rounded-xl px-2 py-2.5 text-[10px] font-bold transition ${activeNav === item ? "bg-[var(--primary)] text-white" : "text-[var(--text-muted)]"}`}
-            >
-              {item}
-            </button>
-          ))}
+        <div className="grid grid-cols-3 gap-1">
+          <a href="#" className="rounded-xl bg-[var(--primary)] px-2 py-2.5 text-center text-[10px] font-bold text-white">الرئيسية</a>
+          <button type="button" onClick={focusSearch} className="rounded-xl px-2 py-2.5 text-[10px] font-bold text-[var(--text-muted)]">استكشاف</button>
+          <a href="#today-schedule" className="rounded-xl px-2 py-2.5 text-center text-[10px] font-bold text-[var(--text-muted)]">الجدول</a>
         </div>
       </nav>
     </main>
