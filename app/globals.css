@@ -1,57 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  --bg: #f6f5f1;
+  --bg: #f5f4f0;
   --surface: #ffffff;
   --surface-muted: #eef1f2;
-  --text: #14181d;
-  --text-muted: #6b727b;
+  --text: #151a20;
+  --text-muted: #6b737d;
   --primary: #102638;
   --accent: #17627c;
-  --accent-soft: #e4eff3;
+  --accent-soft: #e6f0f3;
   --success: #237d56;
+  --success-soft: #e7f3ed;
   --warning: #9a6b13;
-  --border: #dfe2e0;
-  --shadow: 0 18px 50px rgba(16, 38, 56, 0.08);
+  --warning-soft: #f8efda;
+  --border: #dfe3e1;
 }
 
 html {
   background: var(--bg);
+  color-scheme: light;
   scroll-behavior: smooth;
 }
 
 body {
   margin: 0;
-  background:
-    radial-gradient(circle at 100% 0%, rgba(23, 98, 124, 0.06), transparent 28rem),
-    var(--bg);
+  min-width: 320px;
+  background: var(--bg);
   color: var(--text);
-  font-family: Cairo, Tajawal, Arial, sans-serif;
+  font-family: Cairo, Tajawal, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
 }
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
+}
+
+button {
+  cursor: pointer;
 }
 
 ::selection {
   background: rgba(23, 98, 124, 0.16);
-}
-
-.ltr {
-  direction: ltr;
-}
-
-.glass-line {
-  border: 1px solid rgba(223, 226, 224, 0.9);
-  background: rgba(255, 255, 255, 0.82);
-  backdrop-filter: blur(14px);
-}
-
-.soft-shadow {
-  box-shadow: var(--shadow);
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -66,6 +59,7 @@ select {
   html {
     scroll-behavior: auto;
   }
+
   *,
   *::before,
   *::after {
