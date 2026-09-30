@@ -49,12 +49,11 @@ type QuickAction = {
   label: string;
   icon: "calendar" | "search";
   href?: string;
-  action?: "focus-search";
 };
 
 const quickActions: readonly QuickAction[] = [
   { label: "افتح جدول الأسبوع", icon: "calendar", href: "#today-schedule" },
-  { label: "ابحث في المواد", icon: "search", action: "focus-search" },
+  { label: "ابحث في المواد", icon: "search" },
 ];
 
 function SectionHeading({
@@ -87,9 +86,17 @@ function SectionHeading({
 
 export default function HomePage() {
   const [query, setQuery] = useState("");
-  const searchInputRef = useRef<HTMLInputElement>(null);
+  const desktopSearchInputRef = useRef<HTMLInputElement>(null);
+  const mobileSearchInputRef = useRef<HTMLInputElement>(null);
 
-  const focusSearch = () => searchInputRef.current?.focus();
+  const focusSearch = () => {
+    const mobileInput = mobileSearchInputRef.current;
+    if (mobileInput && mobileInput.offsetParent !== null) {
+      mobileInput.focus();
+      return;
+    }
+    desktopSearchInputRef.current?.focus();
+  };
 
   const filteredModules = useMemo(() => {
     const normalized = query.trim().toLowerCase();
@@ -118,7 +125,7 @@ export default function HomePage() {
               <label className="flex h-11 items-center gap-3 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3 transition focus-within:border-[var(--accent)] focus-within:bg-white">
                 <Icon name="search" size={18} className="text-[var(--text-muted)]" />
                 <input
-                  ref={searchInputRef}
+                  ref={desktopSearchInputRef}
                   aria-label="البحث في المنصة"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
@@ -150,6 +157,7 @@ export default function HomePage() {
             <label className="flex min-w-[230px] flex-1 items-center gap-2 rounded-xl border border-[var(--border)] bg-[var(--bg)] px-3">
               <Icon name="search" size={16} className="text-[var(--text-muted)]" />
               <input
+                ref={mobileSearchInputRef}
                 aria-label="البحث في المنصة"
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
