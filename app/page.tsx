@@ -49,7 +49,7 @@ const quickActions = [
   { label: "أضف إلى المحفوظات", icon: "bookmark" },
   { label: "افتح جدول الأسبوع", icon: "calendar" },
   { label: "ابحث في المواد", icon: "search" },
-];
+] as const;
 
 function SectionHeading({
   eyebrow,
