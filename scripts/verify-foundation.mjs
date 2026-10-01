@@ -41,7 +41,7 @@ const ci = read(".github/workflows/ci.yml");
 assert.match(ci, /npm run foundation:verify/);
 assert.match(ci, /npm run typecheck/);
 assert.match(ci, /npm run build/);
-assert.match(ci, /permissions:\n  contents: read/);
+assert.match(ci, /permissions:\r?\n  contents: read/);
 assert.match(ci, /cancel-in-progress: true/);
 
 const page = read("app/page.tsx");
