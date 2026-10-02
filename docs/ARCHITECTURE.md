@@ -25,4 +25,11 @@ feature/* = short-lived implementation branches.
 No direct feature work on main.
 
 ## Quality gates
-Typecheck → lint → unit/integration tests → build → security/RLS review → PR review.
+
+### Current foundation gate
+Typecheck → production build → PR review.
+
+### Pre-production gate
+Dependency lockfile → lint → unit/integration tests → security/RLS review → production build → PR review.
+
+A feature must not be described as production-ready merely because the foundation gate is green.
