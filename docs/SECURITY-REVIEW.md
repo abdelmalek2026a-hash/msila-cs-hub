@@ -40,7 +40,7 @@ Environment variables are documented through `.env.example`, while local environ
 ### Secrets and repository hygiene
 - Do not commit real `.env` files, API keys, service-role keys, tokens, or database connection strings.
 - Add secret scanning to the release process before the first production dataset is imported.
-- Because the repository is currently public, real credentials or private academic materials must not be committed until visibility is intentionally changed.
+- Because the repository is public, real credentials, secrets, or private academic materials must never be committed to Git. Sensitive academic data must use controlled access and private storage.
 
 ## Security acceptance gate
 
